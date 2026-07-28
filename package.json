@@ -34,6 +34,7 @@
     "build": "pnpm --filter \"./packages/**\" build && pnpm --filter @forgeos/web build",
     "build:packages": "pnpm --filter \"./packages/**\" build",
     "start": "pnpm --filter @forgeos/web start",
+    "analyze": "tsx scripts/analyze.mts",
     "typecheck": "tsc -b tsconfig.build.json && pnpm --filter @forgeos/web typecheck",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -43,7 +44,6 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
-    "bench": "node --import tsx packages/core/bench/run.ts",
     "verify": "pnpm build:packages && pnpm typecheck && pnpm lint && pnpm test && pnpm --filter @forgeos/web build"
   },
   "devDependencies": {
