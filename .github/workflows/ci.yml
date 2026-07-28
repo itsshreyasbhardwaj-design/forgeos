@@ -25,13 +25,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # No version here on purpose: the action reads `packageManager` from
+      # package.json, and specifying both is a hard error.
       - uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20.11
+          node-version: 22
           cache: pnpm
 
       - name: Install dependencies
@@ -74,13 +74,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # No version here on purpose: the action reads `packageManager` from
+      # package.json, and specifying both is a hard error.
       - uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20.11
+          node-version: 22
           cache: pnpm
 
       - name: Install dependencies
