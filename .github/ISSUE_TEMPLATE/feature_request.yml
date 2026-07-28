@@ -1,0 +1,52 @@
+name: Feature request
+description: Propose a capability or an improvement
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What are you trying to do that ForgeOS makes hard or impossible today?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you would like
+      description: Describe the capability. Concrete beats abstract.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you considered
+      description: Including doing nothing, or solving it outside ForgeOS.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which module would this belong to
+      options:
+        - Repositories
+        - Architecture
+        - Documentation
+        - API platform
+        - Workflows
+        - Evaluation
+        - Security
+        - Automation
+        - Memory
+        - Assistant / search
+        - Platform (auth, storage, plugins, SDKs)
+        - A new module
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Would you be willing to work on it?
+      options:
+        - label: I would be open to opening a pull request

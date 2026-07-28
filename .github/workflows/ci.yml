@@ -1,0 +1,133 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # The whole point of the project is that it runs with an empty environment.
+  # CI therefore configures nothing, so a regression that introduces a required
+  # variable fails here rather than in someone's first five minutes.
+  FORGEOS_LOG_LEVEL: warn
+
+jobs:
+  verify:
+    name: Build, typecheck, lint and test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.11
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build workspace packages
+        run: pnpm build:packages
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Unit and integration tests
+        run: pnpm test:coverage
+
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
+          retention-days: 7
+
+      - name: Build the application
+        run: pnpm --filter @forgeos/web build
+
+      - name: Analyse this repository with its own engines
+        # Dogfooding as a smoke test: if the analysis pipeline throws on a real
+        # repository, that is a failure regardless of what the unit tests say.
+        run: pnpm analyze .
+
+  e2e:
+    name: End-to-end
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: verify
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.11
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: |
+          pnpm build:packages
+          pnpm --filter @forgeos/web build
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run end-to-end tests
+        run: pnpm test:e2e --project=chromium
+
+      - name: Upload the report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  python-sdk:
+    name: Python SDK
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Import and smoke-test the client
+        working-directory: sdks/python
+        run: |
+          python -m compileall forgeos
+          python -c "
+          from forgeos import ForgeOS, ForgeAPIError
+          client = ForgeOS(base_url='http://localhost:3000', api_key='fk_test', workspace_id='wsp_1')
+          headers = client._headers()
+          assert headers['authorization'] == 'Bearer fk_test'
+          assert headers['x-forgeos-workspace'] == 'wsp_1'
+          assert ForgeAPIError(503, 'x', 'y').retryable
+          assert not ForgeAPIError(400, 'x', 'y').retryable
+          print('python sdk ok')
+          "

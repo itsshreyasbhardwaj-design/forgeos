@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/itsshreyasbhardwaj-design/forgeos/security/advisories/new
+    about: Report privately. Please do not open a public issue for a vulnerability.
+  - name: Question or idea
+    url: https://github.com/itsshreyasbhardwaj-design/forgeos/discussions
+    about: Ask a question or discuss an idea before it becomes a proposal.

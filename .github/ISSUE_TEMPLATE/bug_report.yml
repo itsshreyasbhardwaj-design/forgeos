@@ -1,0 +1,69 @@
+name: Bug report
+description: Something behaves incorrectly
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. For analysis bugs, the output of `pnpm analyze <path>` on a
+        repository that reproduces the problem is worth more than any description.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What did you expect, and what did you get instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Add a repository at ...
+        2. Click Analyse
+        3. The module count shows 0
+    validations:
+      required: true
+
+  - type: textarea
+    id: output
+    attributes:
+      label: Relevant output
+      description: Console output, `pnpm analyze` results, or a screenshot.
+      render: shell
+
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which area
+      options:
+        - Repository analysis
+        - Architecture / graphs
+        - Documentation generation
+        - API platform
+        - Workflows
+        - Evaluation
+        - Security scanning
+        - Automation
+        - Memory / search
+        - Assistant
+        - Application shell / UI
+        - SDKs
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Node version, and any ForgeOS variables you have set (never paste secrets).
