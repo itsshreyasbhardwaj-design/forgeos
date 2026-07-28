@@ -1,0 +1,195 @@
+@import 'tailwindcss';
+@import '@forgeos/ui/tokens.css';
+
+/* Tailwind v4 theme bridge: expose the design tokens as Tailwind colours so
+   utilities like `bg-surface` work alongside raw `var(--forge-*)` usage. */
+@theme inline {
+  --color-bg: var(--forge-bg);
+  --color-bg-subtle: var(--forge-bg-subtle);
+  --color-surface: var(--forge-surface);
+  --color-border-default: var(--forge-border);
+  --color-text-default: var(--forge-text);
+  --color-text-muted: var(--forge-text-muted);
+  --color-accent: var(--forge-accent);
+  --font-sans: var(--forge-font-sans);
+  --font-mono: var(--forge-font-mono);
+}
+
+html {
+  color-scheme: light;
+}
+
+html[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--forge-bg);
+  color: var(--forge-text);
+  font-family: var(--forge-font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Scrollbars that match the theme without hiding the affordance entirely. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--forge-border-strong) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--forge-border-strong);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--forge-text-subtle);
+  background-clip: content-box;
+}
+
+/* Entrance animation used by lists and panels. Respects reduced motion via the
+   global rule in tokens.css. */
+@keyframes forge-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.forge-rise {
+  animation: forge-rise var(--forge-duration) var(--forge-ease) both;
+}
+
+@keyframes forge-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.forge-fade {
+  animation: forge-fade var(--forge-duration-fast) var(--forge-ease) both;
+}
+
+/* Grid backdrop for the marketing surface. */
+.forge-grid {
+  background-image:
+    linear-gradient(to right, var(--forge-border) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--forge-border) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+}
+
+/* Markdown rendering for generated documentation. */
+.forge-prose {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--forge-text);
+}
+.forge-prose h1 {
+  font-size: 1.6rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  margin: 1.6em 0 0.6em;
+}
+.forge-prose h2 {
+  font-size: 1.2rem;
+  font-weight: 620;
+  letter-spacing: -0.015em;
+  margin: 1.5em 0 0.5em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--forge-border);
+}
+.forge-prose h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 1.3em 0 0.4em;
+}
+.forge-prose p,
+.forge-prose ul,
+.forge-prose ol,
+.forge-prose table {
+  margin: 0.75em 0;
+}
+.forge-prose ul,
+.forge-prose ol {
+  padding-left: 1.4em;
+}
+.forge-prose ul {
+  list-style: disc;
+}
+.forge-prose ol {
+  list-style: decimal;
+}
+.forge-prose li {
+  margin: 0.25em 0;
+}
+.forge-prose code {
+  font-family: var(--forge-font-mono);
+  font-size: 0.86em;
+  background: var(--forge-bg-subtle);
+  border: 1px solid var(--forge-border);
+  border-radius: 5px;
+  padding: 0.1em 0.35em;
+}
+.forge-prose pre {
+  background: var(--forge-bg-subtle);
+  border: 1px solid var(--forge-border);
+  border-radius: var(--forge-radius);
+  padding: 0.9rem 1rem;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+.forge-prose pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+.forge-prose blockquote {
+  border-left: 3px solid var(--forge-accent-border);
+  padding-left: 1rem;
+  color: var(--forge-text-muted);
+  margin: 1em 0;
+}
+.forge-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  display: block;
+  overflow-x: auto;
+}
+.forge-prose th,
+.forge-prose td {
+  border: 1px solid var(--forge-border);
+  padding: 0.45rem 0.7rem;
+  text-align: left;
+}
+.forge-prose th {
+  background: var(--forge-bg-subtle);
+  font-weight: 600;
+}
+.forge-prose a {
+  color: var(--forge-accent-text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.forge-prose hr {
+  border: none;
+  border-top: 1px solid var(--forge-border);
+  margin: 2em 0;
+}
