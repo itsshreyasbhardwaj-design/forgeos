@@ -1,0 +1,27 @@
+{
+  "name": "@forgeos/ui",
+  "version": "0.1.0",
+  "description": "ForgeOS design system: tokens, primitives and data-display components.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./src/index.tsx",
+  "types": "./src/index.tsx",
+  "exports": {
+    ".": "./src/index.tsx",
+    "./tokens.css": "./src/tokens.css"
+  },
+  "files": ["src", "README.md"],
+  "sideEffects": ["*.css"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json --noEmit",
+    "clean": "rm -rf tsconfig.tsbuildinfo"
+  },
+  "peerDependencies": {
+    "react": ">=19",
+    "react-dom": ">=19"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.7",
+    "typescript": "^5.9.3"
+  }
+}
