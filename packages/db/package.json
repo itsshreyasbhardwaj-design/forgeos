@@ -1,0 +1,35 @@
+{
+  "name": "@forgeos/db",
+  "version": "0.1.0",
+  "description": "ForgeOS persistence layer: workspace-scoped repositories over pluggable memory, file and PostgreSQL/pgvector adapters.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./schema.sql": "./schema.sql"
+  },
+  "files": ["dist", "schema.sql", "README.md"],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo"
+  },
+  "dependencies": {
+    "@forgeos/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "pg": ">=8"
+  },
+  "peerDependenciesMeta": {
+    "pg": { "optional": true }
+  },
+  "devDependencies": {
+    "@types/pg": "^8.20.0",
+    "typescript": "^5.9.3"
+  }
+}
