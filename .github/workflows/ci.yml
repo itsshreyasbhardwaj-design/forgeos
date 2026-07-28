@@ -23,7 +23,7 @@ jobs:
     timeout-minutes: 20
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # No version here on purpose: the action reads `packageManager` from
       # package.json, and specifying both is a hard error.
@@ -72,7 +72,7 @@ jobs:
     needs: verify
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # No version here on purpose: the action reads `packageManager` from
       # package.json, and specifying both is a hard error.
@@ -111,7 +111,7 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-python@v5
         with:
