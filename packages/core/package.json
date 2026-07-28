@@ -1,0 +1,31 @@
+{
+  "name": "@forgeos/core",
+  "version": "0.1.0",
+  "description": "The ForgeOS kernel: repository analysis, security scanning, documentation generation, graph modelling, search, memory, workflow execution, API tooling and evaluation. Zero runtime dependencies.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./node": {
+      "types": "./dist/fs/node.d.ts",
+      "default": "./dist/fs/node.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
