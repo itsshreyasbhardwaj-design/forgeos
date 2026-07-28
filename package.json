@@ -1,0 +1,62 @@
+{
+  "name": "forgeos",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The AI-powered developer operating system. Repository intelligence, documentation, evaluation, architecture, automation, memory, workflows, APIs, and security in one platform.",
+  "license": "MIT",
+  "homepage": "https://github.com/itsshreyasbhardwaj-design/forgeos#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/itsshreyasbhardwaj-design/forgeos.git"
+  },
+  "bugs": {
+    "url": "https://github.com/itsshreyasbhardwaj-design/forgeos/issues"
+  },
+  "keywords": [
+    "developer-tools",
+    "ai",
+    "code-analysis",
+    "documentation",
+    "workflow-automation",
+    "openapi",
+    "security",
+    "llm-evaluation",
+    "monorepo",
+    "nextjs"
+  ],
+  "engines": {
+    "node": ">=20.11.0",
+    "pnpm": ">=9"
+  },
+  "packageManager": "pnpm@11.17.0",
+  "scripts": {
+    "dev": "pnpm --filter @forgeos/web dev",
+    "build": "pnpm --filter \"./packages/**\" build && pnpm --filter @forgeos/web build",
+    "build:packages": "pnpm --filter \"./packages/**\" build",
+    "start": "pnpm --filter @forgeos/web start",
+    "typecheck": "tsc -b tsconfig.build.json && pnpm --filter @forgeos/web typecheck",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json,css,yml}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,md,json,css,yml}\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "bench": "node --import tsx packages/core/bench/run.ts",
+    "verify": "pnpm build:packages && pnpm typecheck && pnpm lint && pnpm test && pnpm --filter @forgeos/web build"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^20.19.43",
+    "@vitest/coverage-v8": "^3.2.4",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.6.2",
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.48.2",
+    "vitest": "^3.2.4"
+  }
+}
