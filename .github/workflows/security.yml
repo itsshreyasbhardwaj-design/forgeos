@@ -1,0 +1,99 @@
+# Repeatable, zero-cost security checks.
+#
+# Two jobs, both free, running on pull requests and once a week:
+#
+#   1. secrets      — gitleaks over the diff on a pull request, over full
+#                     history on the weekly run.
+#   2. dependencies — an advisory audit through whichever package manager
+#                     this repository already uses.
+#
+# Design notes, because the obvious shortcuts are worse:
+#
+#   * gitleaks runs from its official release BINARY, pinned to a version and
+#     verified against the published SHA-256, rather than via a third-party
+#     Action. That avoids trusting a mutable action tag, avoids the licence
+#     gate the Action applies to some accounts, and makes the CI result
+#     reproducible locally with the same binary.
+#   * actions/checkout is pinned to a commit SHA, not a tag. A tag can be
+#     moved; a SHA cannot.
+#   * Top-level permissions are read-only. No job here needs more.
+#   * The dependency audit reports but does not fail the build. An advisory
+#     with no available fix would otherwise leave a permanently red check,
+#     and a check that is always red is a check everyone learns to ignore.
+#     Dependabot is what actually opens the fix.
+
+name: Security
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: security-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GITLEAKS_VERSION: "8.30.1"
+  GITLEAKS_SHA256: "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb"
+
+jobs:
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Full history on the scheduled run so the scan sees more than the
+          # tip. Shallow on pull requests, where only the diff is in question.
+          fetch-depth: ${{ github.event_name == 'schedule' && 0 || 1 }}
+
+      - name: Install gitleaks (pinned, checksum-verified)
+        run: |
+          set -euo pipefail
+          F="gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          curl -fsSL -o "$F" \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/$F"
+          echo "${GITLEAKS_SHA256}  $F" | sha256sum -c -
+          tar -xzf "$F" gitleaks
+          chmod +x gitleaks
+
+      - name: Scan
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            ./gitleaks git . --log-opts=--all --redact --no-banner --verbose
+          else
+            ./gitleaks dir . --redact --no-banner --verbose
+          fi
+
+  dependencies:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Audit
+        shell: bash
+        run: |
+          if [ -f pnpm-lock.yaml ]; then
+            corepack enable
+            pnpm audit --audit-level high || true
+          elif [ -f package-lock.json ]; then
+            npm audit --audit-level=high || true
+          elif ls requirements*.txt >/dev/null 2>&1; then
+            python -m pip install --quiet pip-audit
+            for r in requirements*.txt; do
+              echo "::group::$r"; pip-audit -r "$r" || true; echo "::endgroup::"
+            done
+          else
+            echo "No recognised lockfile at the repository root; nothing to audit."
+          fi
