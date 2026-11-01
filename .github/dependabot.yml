@@ -4,7 +4,7 @@ updates:
     directory: /
     schedule:
       interval: weekly
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 0
     groups:
       # One pull request per ecosystem rather than a dozen: reviewing twelve
       # single-bump pull requests a week is how dependency updates get ignored.
